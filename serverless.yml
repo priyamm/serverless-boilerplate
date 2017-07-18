@@ -62,10 +62,23 @@ functions:
     events:
       - http:
          path: user
-         method: get
+         method: GET
+      - http:
+         path: user/{userId}
+         method: GET
+        #  request:
+        #    parameters:
+        #      path:
+        #        userId: true
       - http:
          path: user
          method: POST
+      - http:
+          path: user
+          method: PUT
+      - http:
+         path: user
+         method: DELETE
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -92,8 +105,24 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
+resources:
+  Resources:
+   UserTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+       TableName: ${self:service}-${self:provider.stage}-user
+       AttributeDefinitions:
+        -
+          AttributeName: userId
+          AttributeType: S
+       KeySchema:
+        -
+          AttributeName: userId
+          KeyType: HASH
+       ProvisionedThroughput:
+         ReadCapacityUnits: "1"
+         WriteCapacityUnits: "1"
+
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
